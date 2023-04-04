@@ -10,7 +10,7 @@ int main(){
   tab = allouer(taille);
   initialiser(tab, taille);
   afficher(tab, taille);
-  for (int i=0; i<; i++){
+  for (int i=0; i<5; i++){
     jouer(tab,taille,joueur);
     afficher(tab, taille);
   }
