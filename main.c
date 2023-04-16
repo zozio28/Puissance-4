@@ -6,17 +6,28 @@ int main(){
   int taille = 7;
   int** tab = NULL;
   int joueur = 1;
+  int nbCoups = 0;
 
   tab = allouer(taille);
   initialiser(tab, taille);
-  afficher(tab, taille);
+  
   for (int i=0; i<taille*taille; i++){
-    jouer(tab,taille,joueur);
     afficher(tab, taille);
+    tourDeJeu(tab,&joueur,taille);
+    jouer(tab,taille,joueur);
+    nbCoups++;
+    if(aGagne(tab,taille)){
+      afficher(tab,taille);
+      printf("Joueur %d a gagné !\n",joueur);
+      break;
+    }else if(nbCoups == taille*taille){
+      afficher(tab,taille);
+      printf("Match nul !\n");
+      break;
+    }
   }
 
-  free(tab);
-  tab = NULL;
+  libere(tab,taille);
 
   return 0;
 }
