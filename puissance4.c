@@ -1,8 +1,8 @@
-#include <stdio.h>
+#include <stdio.h> //printf, scanf
 #include <stdlib.h>
 #include "puissance4.h"
-/* corps des différentes fonctions/procédures */
 
+//Fonction qui permet d'allouer un tableau dynamique
 int** allouer(int taille){
   int** ptab = NULL;
   ptab = malloc(taille * sizeof(int*));
@@ -12,6 +12,7 @@ int** allouer(int taille){
   return ptab;
 }
 
+//Procédure qui permet d'initialiser un tableau dynamique
 void initialiser(int** maGrille,int taille){
   for (int i=0; i<taille; i++){
     for (int j=0; j<taille; j++){
@@ -20,6 +21,7 @@ void initialiser(int** maGrille,int taille){
   }
 }
 
+//Procédure qui permet d'afficher un tableau dynamique
 void afficher(int** maGrille,int taille){
   for (int i=0; i<taille; i++){
     printf("|");
@@ -38,19 +40,22 @@ void afficher(int** maGrille,int taille){
     }
     printf("\n");
   }
-  printf("-----------------------------\n");
+  printf("+---+---+---+---+---+---+---+\n");
 }
 
+//Fonction demande au joueur de saisir les coordonnées de son pion
 int jouer(int** maGrille,int taille,int joueur){
   int res = 0;
   int colonne;
   int l=taille-1;
 
+  //demande au joueur de jouer tant que ses coordonnées sont inexactes
   do {
     printf("Veuillez saisir une colonne ? \n");
     scanf("%d", &colonne);
-  } while ((colonne > taille-1) || (colonne < 0));
+  } while ((colonne > l) || (colonne < 0));
 
+  //enregistre la place du pion du joueur
   while (l >= 0 && !res){
     if(maGrille[l][colonne] == -1){
       maGrille[l][colonne] = joueur;
@@ -67,37 +72,49 @@ int jouer(int** maGrille,int taille,int joueur){
   return res;
 }
 
+//Procédure qui permet de placer le pion du joueur et changer de joueur
 void tourDeJeu(int** maGrille,int*joueur,int taille){
   int cptTour = 0;
   int res = -1;
   int place = 0;
 
-  while (res==-1 || cptTour!=taille*taille){
+  //place le pion du joueur si ses coordonnées son correctes
+  while (res==-1 || cptTour!=taille*taille-1){
     while(!place){
       place = jouer(maGrille,taille,*joueur);
+      afficher(maGrille,taille);
       if(!place){
         printf("-----Erreur de saisie----- \nVeuillez recommencer \n");
       }
-      afficher(maGrille,taille);
     }
 
-    cptTour++;
-    res = aGagne(maGrille,taille); 
-
-    //change de joueur
-    switch(*joueur){
-        case 1 :
-            *joueur = 2;
-            break;
-        case 2 :
-            *joueur = 1;
-            break;
+    res = aGagne(maGrille,taille);
+    if (res) {
+      break;
+    }else if(cptTour==taille*taille-1){
+      return;
     }
 
+    if (!res){
+      //augmente le compteur du tour
+      cptTour++;
+
+      //change de joueur
+      switch(*joueur){
+          case 1 :
+              *joueur = 2;
+              break;
+          case 2 :
+              *joueur = 1;
+              break;
+      }
+    }
     place = 0;
   }
+
 }
 
+//Fonction qui vérifie les lignes
 int verificationLignes(int** maGrille,int taille){
   int joueur = -1;
   int i,j;
@@ -109,44 +126,50 @@ int verificationLignes(int** maGrille,int taille){
       }
     }
   }
+
   return joueur;
 }
 
+//Fonction qui vérifie les colonnes
 int verificationColonnes(int** maGrille,int taille){
   int joueur = -1;
   int i,j;
 
-  for(int i=0 ; i<taille ; i++){
-    for(int j=0 ; j<taille-3 ; j++){
-      if((maGrille[i][j]!=-1) && (maGrille[i][j]==maGrille[i][j+1]) && (maGrille[i][j+1]==maGrille[i][j+2]) && (maGrille[i][j+2]==maGrille[i][j+3])){
+  for(int i=0 ; i<taille-3 ; i++){
+    for(int j=0 ; j<taille ; j++){
+      if((maGrille[i][j]!=-1) && (maGrille[i][j]==maGrille[i+1][j]) && (maGrille[i+1][j]==maGrille[i+2][j]) && (maGrille[i+2][j]==maGrille[i+3][j])){
         joueur = maGrille[i][j];
       }
     }
   }
+
   return joueur;
 }
 
+//Fonction qui vérifie la diagonale bas-gauche vers haut-droite
 int verificationDiag1(int** maGrille,int taille){
   int joueur = -1;
   int i,j;
 
   for(int i=0 ; i<taille-3 ; i++){
     for(int j=3 ; j<taille ; j++){
-      if((maGrille[i][j]!=-1) && (maGrille[i][j]==maGrille[i][j+1]) && (maGrille[i][j+1]==maGrille[i][j+2]) && (maGrille[i][j+2]==maGrille[i][j+3])){
+      if((maGrille[i][j]!=-1) && (maGrille[i][j]==maGrille[i+1][j-1]) && (maGrille[i+1][j-1]==maGrille[i+2][j-2]) && (maGrille[i+2][j-2]==maGrille[i+3][j-3])){
         joueur = maGrille[i][j];
       }
     }
   }
+
   return joueur;
 }
 
+//Fonction qui vérifie la diagonale haut-gauche vers bas-droite
 int verificationDiag2(int** maGrille, int taille){
   int joueur = -1;
   int i,j;
 
   for(int i=0 ; i<taille-3 ; i++){
     for(int j=0 ; j<taille-3 ; j++){
-      if((maGrille[i][j]!=-1) && (maGrille[i][j]==maGrille[i][j+1]) && (maGrille[i][j+1]==maGrille[i][j+2]) && (maGrille[i][j+2]==maGrille[i][j+3])){
+      if((maGrille[i][j]!=-1) && (maGrille[i][j]==maGrille[i+1][j+1]) && (maGrille[i+1][j+1]==maGrille[i+2][j+2]) && (maGrille[i+2][j+2]==maGrille[i+3][j+3])){
         joueur = maGrille[i][j];
       }
     }
@@ -154,32 +177,34 @@ int verificationDiag2(int** maGrille, int taille){
   return joueur;
 }
 
+//Fonction qui permet de tester si un joueur a gagné
 int aGagne(int** maGrille,int taille){
-  int joueur;
-
-  for(int i = 0; i < taille ; i++){
-    if (verificationLignes(maGrille,taille)){
-      return 1;
-    }
-  }
-
-  for(int i = 0; i < taille ; i++){
-    if (verificationColonnes(maGrille,taille)){
-      return 1;
-    }
-  }
-
-  if (verificationDiag1(maGrille,taille)){
+ 
+  //vérification des lignes
+  if (verificationLignes(maGrille,taille) != -1){
     return 1;
   }
 
-  if (verificationDiag2(maGrille,taille)){
+  //vérification des colonnes
+  if (verificationColonnes(maGrille,taille) != -1){
     return 1;
   }
+
+  //vérification de la diagonale 1
+  if (verificationDiag1(maGrille,taille) != -1){
+    return 1;
+  }
+
+  //vérificaton de la diagonale 2
+  if (verificationDiag2(maGrille,taille) != -1){
+    return 1;
+  }
+
   return 0;
 
 }
 
+//Procédure qui libère l'espace alloué
 void libere (int** maGrille,int taille){
   for(int i=0 ; i<taille ; i++){
     free(maGrille[i]);

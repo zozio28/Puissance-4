@@ -10,21 +10,19 @@ int main(){
 
   tab = allouer(taille);
   initialiser(tab, taille);
+  afficher(tab, taille);
   
   for (int i=0; i<taille*taille; i++){
-    afficher(tab, taille);
     tourDeJeu(tab,&joueur,taille);
-    jouer(tab,taille,joueur);
     nbCoups++;
     if(aGagne(tab,taille)){
-      afficher(tab,taille);
       printf("Joueur %d a gagné !\n",joueur);
       break;
-    }else if(nbCoups == taille*taille){
-      afficher(tab,taille);
+    }else if(nbCoups == taille*taille-1){
       printf("Match nul !\n");
       break;
     }
+    jouer(tab,taille,joueur);
   }
 
   libere(tab,taille);
