@@ -51,7 +51,7 @@ int jouer(int** maGrille,int taille,int joueur){
 
   //demande au joueur de jouer tant que ses coordonnées sont inexactes
   do {
-    printf("Veuillez saisir une colonne ? \n");
+    printf("Veuillez saisir une colonne (0-6) ? \n");
     scanf("%d", &colonne);
   } while ((colonne > l) || (colonne < 0));
 
@@ -62,10 +62,6 @@ int jouer(int** maGrille,int taille,int joueur){
       res = 1;
     }else{
       l = l - 1;
-      if (l >= 0 && maGrille[l][colonne] == -1){
-        maGrille[l][colonne] = joueur;
-        res = 1;
-      }
     }
   }
 
@@ -76,40 +72,34 @@ int jouer(int** maGrille,int taille,int joueur){
 void tourDeJeu(int** maGrille,int*joueur,int taille){
   int cptTour = 0;
   int res = -1;
-  int place = 0;
 
   //place le pion du joueur si ses coordonnées son correctes
-  while (res==-1 || cptTour!=taille*taille-1){
-    while(!place){
-      place = jouer(maGrille,taille,*joueur);
+  while (res==-1 && cptTour!=taille*taille){
+    if (jouer(maGrille,taille,*joueur)) {
       afficher(maGrille,taille);
-      if(!place){
-        printf("-----Erreur de saisie----- \nVeuillez recommencer \n");
+
+      res = aGagne(maGrille,taille);
+      if (res) {
+        break;
+      }else if(cptTour==taille*taille){
+        break;
+      }
+
+      if (!res){
+        //augmente le compteur du tour
+        cptTour++;
+
+        //change de joueur
+        switch(*joueur){
+            case 1 :
+                *joueur = 2;
+                break;
+            case 2 :
+                *joueur = 1;
+                break;
+        }
       }
     }
-
-    res = aGagne(maGrille,taille);
-    if (res) {
-      break;
-    }else if(cptTour==taille*taille-1){
-      return;
-    }
-
-    if (!res){
-      //augmente le compteur du tour
-      cptTour++;
-
-      //change de joueur
-      switch(*joueur){
-          case 1 :
-              *joueur = 2;
-              break;
-          case 2 :
-              *joueur = 1;
-              break;
-      }
-    }
-    place = 0;
   }
 
 }

@@ -1,3 +1,5 @@
 # Puissance-4
+Contient le programme du puissance 4 avec pointeurs
 
-Presque fini : Match nu ne fonctionne pas !
+## PROGRAMME ##
+Pour lancer le programme dans le terminal, écrire les commandes 'make clean' puis 'make' puis './exe'

@@ -14,15 +14,14 @@ int main(){
   
   for (int i=0; i<taille*taille; i++){
     tourDeJeu(tab,&joueur,taille);
-    nbCoups++;
+    nbCoups++;    
     if(aGagne(tab,taille)){
-      printf("Joueur %d a gagné !\n",joueur);
+      printf("\nJoueur %d a gagné !\n\n",joueur);
       break;
-    }else if(nbCoups == taille*taille-1){
-      printf("Match nul !\n");
+    }else if(nbCoups == taille*taille){
+      printf("\nMatch nul !\n\n");
       break;
     }
-    jouer(tab,taille,joueur);
   }
 
   libere(tab,taille);
